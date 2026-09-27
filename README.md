@@ -13,9 +13,22 @@ them; appointments still ping once unless marked `hard`.
 ## Install
 
 ```bash
+git clone https://github.com/creekwitch/nudge.git
+cd nudge
 sudo apt install python3-gi python3-yaml python3-gi-cairo
 make install          # runs tests, installs the systemd user service
 ```
+
+`make install` runs the test suite first, so it needs pytest:
+
+```bash
+python3 -m pip install --user pytest     # or: pipx install pytest
+```
+
+If you would rather skip the pre-flight check, run
+`tools/install-service.sh` directly — it installs without running the suite.
+With [uv](https://docs.astral.sh/uv/) installed, `uv run pytest -q` works with
+no setup at all.
 
 Config lives in `~/.config/nudge/` (`reminders.yaml`, `config.yaml`);
 state in `~/.local/state/nudge/` (ledger, log, popup handshake).
