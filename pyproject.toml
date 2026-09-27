@@ -1,0 +1,22 @@
+[project]
+name = "nudge"
+version = "0.1.0"
+description = "A care reminder daemon — states the thing exists, never asks did you do it."
+requires-python = ">=3.10"
+dependencies = ["PyYAML>=6", "PyGObject>=3.42"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["nudge"]
+
+[tool.uv]
+package = true
+
+[project.scripts]
+nudge = "nudge.cli:main"

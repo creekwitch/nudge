@@ -1,0 +1,309 @@
+/* ==========================================================================
+   Nudge — "Ledger" theme
+   --------------------------------------------------------------------------
+   An ADDITIVE skin. It overrides tokens and re-states the few structural
+   rules that hardcode values the tokens cannot reach (the wall's layer list,
+   the wordmark's gradient text-clip). app.js and the markup are untouched,
+   and app.css remains the default system: remove this file's <link> and
+   Catppuccin Mocha returns.
+
+   Palette: the lotus pond, shared with The Daily Ledger.
+     beige          #F7F4D5   the paper
+     dark green     #0A3323   the ink
+     midnight green #105666   structure
+     moss green     #839958   ticks / completed
+     rosy brown     #D3968C   highlights
+
+   Voice rule (AGENTS.md): no user-visible string is introduced here.
+   House rule: this file contains no JavaScript and no innerHTML.
+   ========================================================================== */
+
+:root {
+  /* --- the five palette colours --- */
+  --lotus-beige:      #F7F4D5;
+  --lotus-dark-green: #0A3323;
+  --lotus-midnight:   #105666;
+  --lotus-moss:       #839958;
+  --lotus-rosy:       #D3968C;
+
+  /* --- the Catppuccin ramp, re-pointed from dark→light to light→dark.
+     app.css uses this ramp as a lightness ladder, so inverting it turns
+     "surfaces" into paper and "text" into ink in one move. --- */
+  --crust:     #E6DFB8;
+  --mantle:    #EFE9C7;
+  --base:      #F7F4D5;
+  --surface0:  #F1ECCD;
+  --surface1:  #E4DEBB;
+  --surface2:  #D4CDA2;
+  --overlay0:  #ABA379;
+  --overlay1:  #8F8763;
+  --overlay2:  #6F6A4F;
+  --subtext0:  #3F5A4A;
+  --subtext1:  #23412F;
+  --text:      #0A3323;
+
+  /* accent slots → the pond */
+  --lavender:  #105666;
+  --blue:      #105666;
+  --sapphire:  #16586A;
+  --sky:       #2F6E78;
+  --teal:      #5F7F68;
+  --green:     #839958;
+  --yellow:    #B0894E;
+  --peach:     #A9603F;
+  --maroon:    #B4645C;
+  --red:       #A65B52;
+  --mauve:     #7E5F6B;
+  --pink:      #C4786D;
+
+  /* --- semantic --- */
+  --fg:        var(--text);
+  --fg-dim:    var(--subtext0);
+  --fg-faint:  var(--overlay1);
+  --line:      rgba(201, 201, 160, .85);
+  --line-strong: #C9C9A0;
+
+  /* signifiers — each reminder type keeps its own colour */
+  --sig-appointment: #C4786D;   /* rosy brown */
+  --sig-chore:       #5F7F68;   /* pond teal  */
+  --sig-nudge:       #839958;   /* moss       */
+  --gear1: #5F7F68;
+  --gear2: #B0894E;
+  --gear3: #A65B52;
+
+  /* --- type: the ledger is a printed book, so the UI gets its serif --- */
+  --font-ui: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+             "Times New Roman", serif;
+  --font-mono: "Courier New", Courier, monospace;
+
+  /* geometry — tighter, squarer cards */
+  --r-sm: 3px;
+  --r-md: 4px;
+  --r-lg: 5px;
+  --r-xl: 6px;
+
+  /* depth — paper on a desk */
+  --shadow-1: 0 1px 1px rgba(10, 51, 35, .10);
+  --shadow-2: 0 2px 5px rgba(10, 51, 35, .14);
+  --shadow-3: 0 10px 28px -10px rgba(10, 51, 35, .32);
+
+  /* --- glass: the ledger has none. Opaque paper instead of a blur. --- */
+  --glass:          #FBF9E4;
+  --glass-strong:   #F7F4D5;
+  --glass-hair:     rgba(201, 201, 160, .6);
+  --glass-line:     var(--line);
+  --glass-line-hot: rgba(196, 120, 109, .5);
+  --glass-blur:     none;
+  --glass-blur-soft: none;
+  --glass-light:    inset 0 1px 0 rgba(255, 255, 255, .85);
+  --glass-glow:     0 2px 4px rgba(131, 153, 88, .22);
+
+  /* --- the wall: one midnight-to-deep-green wash, like the ledger's surround.
+     THREE layers only — the size list below must match this count exactly. --- */
+  --wall:
+    radial-gradient(ellipse at 20% 6%,
+      rgba(16, 86, 102, .55) 0%,
+      rgba(10, 51, 35, .85) 45%,
+      #041814 100%),
+    linear-gradient(180deg, rgba(10, 51, 35, .35), rgba(4, 24, 20, .75)),
+    #041814;
+
+  --grad: linear-gradient(100deg, #C4786D, #7E5F6B 45%, #105666);
+
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-pop: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* --- structural restatements, where app.css hardcodes what tokens cannot
+   reach. The wall layer count changed, so the size list must change with it,
+   or the first layer tiles itself into a band. --- */
+body {
+  background: var(--wall);
+  background-size: auto, auto, auto;
+  background-attachment: fixed;
+  color: var(--fg);
+}
+
+html { scrollbar-color: var(--surface2) transparent; }
+
+::selection {
+  background: rgba(196, 120, 109, .42);
+  color: var(--lotus-dark-green);
+}
+
+:focus-visible {
+  outline: 2px solid var(--lotus-rosy);
+  outline-offset: 2px;
+}
+
+/* The topbar sits on paper, not glass. */
+.topbar {
+  background: rgba(247, 244, 213, .96);
+  backdrop-filter: none;
+  border-bottom: 2px solid var(--line-strong);
+  box-shadow: 0 1px 3px rgba(10, 51, 35, .12);
+}
+
+/* The wordmark's gradient text-clip needs an opaque colour on paper. */
+.wordmark-text {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--lotus-midnight);
+  font-family: var(--font-ui);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .7);
+}
+
+.wordmark-glyph { filter: none; }
+
+/* Panels become real paper cards: opaque, hairline rule, faint ruled grid. */
+.panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass);
+  backdrop-filter: none;
+  border: 1px solid var(--line-strong);
+  box-shadow: 0 2px 5px rgba(10, 51, 35, .14),
+              inset 0 1px 0 rgba(255, 255, 255, .7);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg, rgba(10, 51, 35, .045) 0 1px, transparent 1px 26px);
+  z-index: 0;
+}
+
+.panel > * { position: relative; z-index: 1; }
+
+/* Headings: engraved, spaced, midnight. */
+.panel-head h2 { color: var(--lotus-midnight); letter-spacing: .1em;
+                 text-transform: uppercase; font-size: 13px; }
+.panel h3 { color: var(--lotus-rosy); letter-spacing: .06em; }
+
+/* Tabs: a rule-bound bar with a rose active mark, like the ledger's nav. */
+.tabs {
+  background: rgba(247, 244, 213, .55);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+}
+
+.tab { color: var(--fg-dim); font-family: var(--font-ui); letter-spacing: .06em; }
+.tab.is-active { color: var(--lotus-midnight); }
+.tab-ink { background: var(--lotus-rosy); }
+
+/* Count pills lose the neon. */
+.count-pill {
+  background: rgba(131, 153, 88, .20);
+  color: var(--lotus-dark-green);
+  box-shadow: inset 0 0 0 1px rgba(131, 153, 88, .45);
+}
+
+/* Reminder rows: real paper cards. NOTE the class is .rem-card — an earlier
+   pass styled a non-existent ".rem" and so changed nothing. */
+.rem-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: 0 1px 2px rgba(10, 51, 35, .08);
+}
+
+.rem-card:hover {
+  border-color: rgba(196, 120, 109, .55);
+  box-shadow: 0 2px 5px rgba(10, 51, 35, .14);
+}
+
+.rem-card.is-editing {
+  border-color: var(--lotus-rosy);
+  box-shadow: 0 0 0 1px rgba(196, 120, 109, .4);
+}
+
+/* Card text must read as ink, not pale green. --fg/--fg-dim are already ink,
+   but state them so a later token change can't wash the cards out again. */
+.rem-title { color: var(--lotus-dark-green); font-weight: 600; }
+.rem-sub   { color: var(--subtext0); }
+.rem-id    { color: var(--overlay2); }
+
+/* Chips: the "breaks through" badge was a washed tan blob because --yellow
+   became a pale sand. Give each chip a legible ink on a tinted ground. */
+.chip {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.chip.hard {
+  color: #7A3F35;
+  background: rgba(196, 120, 109, .22);
+  box-shadow: inset 0 0 0 1px rgba(196, 120, 109, .55);
+  animation: none;              /* the ledger does not blink */
+}
+
+.chip.gear2 {
+  color: #6B4A18;
+  background: rgba(176, 137, 78, .22);
+  box-shadow: inset 0 0 0 1px rgba(176, 137, 78, .55);
+}
+
+.chip.gear3 {
+  color: #7A3F35;
+  background: rgba(166, 91, 82, .22);
+  box-shadow: inset 0 0 0 1px rgba(166, 91, 82, .55);
+  animation: none;
+}
+
+.chip.deferred {
+  color: #5A4050;
+  background: rgba(126, 95, 107, .20);
+  box-shadow: inset 0 0 0 1px rgba(126, 95, 107, .5);
+}
+
+/* Buttons: outlined paper, not a filled gradient. */
+.btn--primary {
+  background: rgba(255, 255, 255, .6);
+  color: var(--lotus-midnight);
+  border: 1px solid var(--lotus-midnight);
+  box-shadow: var(--shadow-1);
+  font-family: var(--font-ui);
+}
+.btn--primary:hover { background: var(--lotus-midnight); color: var(--lotus-beige); }
+
+.btn { color: var(--fg-dim); }
+.btn--ghost { border-color: var(--line-strong); color: var(--lotus-midnight); }
+.btn--ghost:hover { background: rgba(255, 255, 255, .7); color: var(--lotus-midnight); }
+
+/* Inputs: paper fields with a ruled underline. */
+input[type="text"], input[type="number"], input:not([type]),
+select, textarea, input[type="datetime-local"] {
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  color: var(--fg);
+}
+
+input::placeholder, textarea::placeholder { color: var(--overlay0); }
+
+/* The status dot: quiet reads as rose, awake as moss. */
+.topbar-status::before { background: var(--lotus-moss); box-shadow: none; }
+.topbar-status.quiet::before { background: var(--lotus-rosy); box-shadow: none; }
+
+/* Calendar modal + log view sit on paper too. */
+.modal {
+  background: var(--glass-strong);
+  backdrop-filter: none;
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-3);
+}
+
+.log-view {
+  background: rgba(255, 255, 255, .55);
+  border: 1px solid var(--line);
+  color: var(--fg-dim);
+}
+
+.cal-day, .cal-grid { color: var(--fg); }

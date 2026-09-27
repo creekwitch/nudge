@@ -1,0 +1,8 @@
+{
+    "uuid": "nudge@creekwitch",
+    "name": "Nudge",
+    "description": "Shows what Nudge is waiting on — the next reminder, deferred chores, and the escalations in progress. Done / Snooze / Didn't do it, right from the desktop.",
+    "prevent-decorations": true,
+    "max-instances": "1",
+    "author": "Haruka Tenou"
+}

@@ -1,0 +1,70 @@
+/* Nudge desklet styling — Catppuccin Mocha. */
+
+.nudge-desklet {
+    background: rgba(30, 30, 46, 0.82);
+    border: 1px solid rgba(203, 166, 247, 0.28);
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: #cdd6f4;
+    font-family: sans-serif;
+    width: 260px;
+}
+
+.nudge-head {
+    spacing: 6px;
+    margin-bottom: 4px;
+}
+
+.nudge-title {
+    color: #f5c2e7;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.nudge-dot {
+    color: #6c7086;
+    font-size: 11px;
+}
+.nudge-dot.g1 { color: #94e2d5; }
+.nudge-dot.g2 { color: #fab387; }
+.nudge-dot.g3 { color: #f38ba8; }
+
+.nudge-body {
+    color: #cdd6f4;
+    font-size: 12px;
+    margin: 2px 0;
+}
+
+.nudge-meta {
+    color: #6c7086;
+    font-size: 10px;
+    margin-bottom: 8px;
+}
+
+.nudge-row {
+    spacing: 6px;
+}
+
+.nudge-btn {
+    background: #313244;
+    border: 1px solid #45475a;
+    border-radius: 6px;
+    color: #cdd6f4;
+    padding: 4px 8px;
+    font-size: 11px;
+    transition-duration: 150ms;
+}
+.nudge-btn:hover {
+    border-color: #cba6f7;
+}
+.nudge-btn.ok {
+    background: rgba(166, 227, 161, 0.16);
+    border-color: rgba(166, 227, 161, 0.45);
+    color: #a6e3a1;
+}
+.nudge-btn.ok:hover {
+    background: rgba(166, 227, 161, 0.28);
+}
+.nudge-btn.meh {
+    color: #a6adc8;
+}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nudge</title>
+<link rel="stylesheet" href="/app.css">
+<!-- Ledger skin. Loaded last so it wins at the token layer only; remove this
+     line (or set the ledgerTheme flag off) to return to Catppuccin Mocha. -->
+<link rel="stylesheet" href="/theme-ledger.css" id="ledger-theme">
+<script>
+  // Honour a stored preference so the skin can be switched off without an edit.
+  try {
+    if (localStorage.getItem("nudge-theme") === "catppuccin") {
+      document.getElementById("ledger-theme").disabled = true;
+    }
+  } catch (e) { /* private mode: keep the default */ }
+</script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wordmark">
+    <span class="wordmark-glyph">🕯️</span>
+    <span class="wordmark-text">nudge</span>
+  </div>
+  <span id="status-line" class="topbar-status">…</span>
+  <div class="topbar-actions">
+    <button id="cal-open" class="btn btn--ghost btn--small" title="Calendar (C)">📅 Calendar</button>
+  </div>
+</div>
+
+<div class="tabs" role="tablist">
+  <span class="tab-ink" id="tab-ink"></span>
+  <button class="tab is-active" data-tab="reminders" role="tab">Reminders</button>
+  <button class="tab" data-tab="quiet" role="tab">Quiet hours</button>
+  <button class="tab" data-tab="behavior" role="tab">Behavior</button>
+  <button class="tab" data-tab="status" role="tab">Status</button>
+</div>
+
+<!-- ==================== calendar modal ==================== -->
+<div id="cal-modal" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Calendar">
+    <div class="modal-head">
+      <button id="cal-today" class="btn btn--ghost btn--small">Today</button>
+      <h2 id="cal-title">…</h2>
+      <button id="cal-prev" class="btn btn--ghost btn--icon" aria-label="Previous month">‹</button>
+      <button id="cal-next" class="btn btn--ghost btn--icon" aria-label="Next month">›</button>
+      <button id="cal-close" class="btn btn--ghost btn--icon" aria-label="Close calendar">✕</button>
+    </div>
+    <div id="cal-day" class="cal-day" hidden></div>
+    <div class="cal-weekdays">
+      <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+    </div>
+    <div id="cal-grid" class="cal-grid"></div>
+    <p class="cal-legend">
+      <span class="key k-appointment"></span>appointment
+      <span class="key k-chore"></span>chore
+      <span class="key k-nudge"></span>nudge
+      <span class="muted">— dimmed means already past</span>
+    </p>
+    <p class="cal-hint">Click a day for its list and the Done /
+      Didn't-do-it / Snooze exits. Drag an appointment or chore onto another day
+      to move it.</p>
+  </div>
+</div>
+
+<main>
+<!-- ==================== reminders ==================== -->
+<section id="tab-reminders" class="tabpane is-active">
+  <div class="split">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Your reminders</h2>
+        <span id="rem-count" class="count-pill">0</span>
+      </div>
+      <div id="reminder-list" class="rem-list"></div>
+    </div>
+
+    <form id="reminder-form" class="panel">
+      <div class="panel-head"><h2 id="rf-title">Add a reminder</h2></div>
+      <p id="rf-sub" class="panel-sub">Chat is for capture. This is for shaping.</p>
+      <input type="hidden" id="rf-editing" value="">
+
+      <label class="field">
+        <span>ID</span>
+        <input id="rf-id" required pattern="[a-z0-9-]+" placeholder="laundry">
+      </label>
+
+      <label class="field">
+        <span>Type</span>
+        <select id="rf-type">
+          <option value="appointment">appointment — fixed date &amp; time</option>
+          <option value="chore">chore — recurring weekdays</option>
+          <option value="nudge">nudge — every so often</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Text</span>
+        <input id="rf-text" required placeholder="Laundry">
+      </label>
+
+      <label class="field" id="rf-when-row">
+        <span>When</span>
+        <input type="datetime-local" id="rf-when">
+      </label>
+
+      <label class="field" id="rf-schedule-row">
+        <span>Schedule</span>
+        <input id="rf-schedule" placeholder="mon,wed,fri 13:00">
+        <em class="hint">weekdays, then a time</em>
+      </label>
+
+      <label class="field" id="rf-every-row">
+        <span>Every</span>
+        <input id="rf-every" placeholder="90m">
+        <em class="hint">90m, 2h, 45m …</em>
+      </label>
+
+      <label class="field">
+        <span>Note <span class="hint">— the voice may weave this in</span></span>
+        <input id="rf-note" placeholder="Leave by 1:15. Keys, wallet, phone.">
+      </label>
+
+      <div class="toggles">
+        <label class="chk" id="rf-active-only-row">
+          <input type="checkbox" id="rf-active-only">
+          <span>only while I'm active</span>
+        </label>
+        <label class="chk" id="rf-hard-row">
+          <input type="checkbox" id="rf-hard">
+          <span>break through quiet hours</span>
+        </label>
+      </div>
+
+      <div class="row">
+        <button type="submit" class="btn btn--primary" id="rf-save">Save reminder</button>
+        <button type="button" class="btn btn--ghost" id="rf-cancel" hidden>Cancel</button>
+      </div>
+      <p id="rf-error" class="error" hidden></p>
+    </form>
+  </div>
+</section>
+
+<!-- ==================== quiet hours ==================== -->
+<section id="tab-quiet" class="tabpane">
+  <div class="panel">
+    <div class="panel-head"><h2>Quiet hours</h2></div>
+    <p class="panel-sub">Chores and nudges wait silently and arrive when quiet
+      hours end — queued, never dropped. Appointments still ping once, unless
+      you mark them to break through.</p>
+    <div id="quiet-grid"></div>
+    <div class="row">
+      <button id="quiet-save" class="btn btn--primary">Save quiet hours</button>
+      <button id="quiet-copy" class="btn">Copy today to all days</button>
+      <button id="quiet-none" class="btn btn--ghost">No quiet hours</button>
+    </div>
+    <p id="quiet-msg" class="muted" hidden></p>
+    <p id="quiet-spill" class="muted spill-note" hidden></p>
+  </div>
+</section>
+
+<!-- ==================== behavior ==================== -->
+<section id="tab-behavior" class="tabpane">
+  <div class="panel">
+    <div class="panel-head"><h2>Behavior</h2></div>
+    <p class="panel-sub">How insistently Nudge climbs its gears.</p>
+    <form id="behavior-form">
+      <div class="grid2">
+        <label class="field">
+          <span>Gear 2 after (min)</span>
+          <input type="number" id="bf-gear2" min="1">
+          <em class="hint">critical notification + chime</em>
+        </label>
+        <label class="field">
+          <span>Gear 3 after (more min)</span>
+          <input type="number" id="bf-gear3" min="1">
+          <em class="hint">then the persistent popup</em>
+        </label>
+        <label class="field">
+          <span>Snooze options</span>
+          <input id="bf-snooze" placeholder="5, 10, 30, 60">
+          <em class="hint">minutes, comma-separated</em>
+        </label>
+        <label class="field">
+          <span>Popup corner</span>
+          <select id="bf-corner">
+            <option value="bottom-right">bottom-right</option>
+            <option value="bottom-left">bottom-left</option>
+            <option value="top-right">top-right</option>
+            <option value="top-left">top-left</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Chime repeat (sec)</span>
+          <input type="number" id="bf-chimerep" min="10">
+        </label>
+        <label class="chk standalone">
+          <input type="checkbox" id="bf-chime">
+          <span>play a chime</span>
+        </label>
+      </div>
+      <div class="row">
+        <button type="submit" class="btn btn--primary">Save behavior</button>
+      </div>
+      <p id="bf-msg" class="muted" hidden></p>
+    </form>
+  </div>
+</section>
+
+<!-- ==================== status ==================== -->
+<section id="tab-status" class="tabpane">
+  <div class="panel">
+    <div class="panel-head"><h2>Right now</h2></div>
+    <div id="status-cards" class="stat-grid"></div>
+    <h3>Test a reminder</h3>
+    <p class="panel-sub">Fires one for real — gear 1 immediately, then it
+      climbs on the daemon's ticks. Essential for tuning without waiting.</p>
+    <div class="row">
+      <select id="tf-id"></select>
+      <button id="tf-go" class="btn btn--primary">Test-fire</button>
+    </div>
+    <p id="tf-result" class="muted" hidden></p>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Recent activity</h2></div>
+    <p class="panel-sub">For tuning, not judgment.</p>
+    <div id="log-view" class="log-view">loading…</div>
+  </div>
+</section>
+</main>
+
+<p class="foot">Nudge states the thing exists. It never asks whether you did it.</p>
+
+<script src="/app.js"></script>
+</body>
+</html>

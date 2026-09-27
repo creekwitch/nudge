@@ -1,0 +1,52 @@
+# Nudge — Freeware License
+
+Copyright (c) 2026 Haruka Tenou (creekwitch)
+
+**NUDGE IS FREEWARE.** It is free to use, free to share, and free to modify.
+It is not for sale.
+
+## 1. You may
+
+- **Use** Nudge for any personal purpose, at no cost.
+- **Read, study, and modify** the source. It is yours to tinker with.
+- **Share** copies with others, including modified versions — provided you
+  pass on this license and credit the original with a link back to
+  <https://github.com/creekwitch/nudge>.
+
+## 2. You may not sell it
+
+This applies to Nudge itself and to any modified version of it:
+
+- Do not sell, resell, rent, lease, or sublicense it.
+- Do not charge a fee for it, or for access to it.
+- Do not bundle it into a paid product or paid service.
+- Do not monetize it — including by advertising, donations, or
+  paywalled distribution.
+
+Sharing is welcome. Selling is not. If you want to support the work, the
+link back is the whole ask.
+
+## 3. No warranty
+
+Nudge is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose, and non-infringement.
+
+**It is a reminder tool, not a medical device, and not a safety system.**
+Do not rely on it for anything where a missed or late notice could cause
+harm — medication schedules, medical appointments, or anything
+time-critical. In no event shall the author be liable for any claim,
+damages, or other liability arising from, out of, or in connection with
+Nudge or its use.
+
+## 4. Your data is yours
+
+Nudge stores your reminders in a plain YAML file on your own machine and
+sends nothing over the network. That is a design commitment, and it means
+your data is not the author's business. See `SPEC.md` for the details.
+
+---
+
+*Nudge exists because some people are time-blind and hyperfocus-prone, and
+every conventional reminder app lets them down in the same two ways. It is
+free because the problem it solves is not a business.*

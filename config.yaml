@@ -1,0 +1,28 @@
+# Nudge defaults — first pass, tune after a week of logs (see SPEC §4/§7)
+gear2_delay_min: 10
+gear3_delay_min: 10
+snooze_options: [5, 10, 30, 60]
+chime: true
+chime_repeat_s: 60
+# Chime playback volume, 0.0..1.0 (or 0..100 to mean percent). The chime is a
+# nudge, not an alarm — keep it gentle, especially for sensory sensitivity.
+chime_volume: 0.35
+popup_corner: bottom-right
+tick_seconds: 30
+quiet_hours:
+  mon: ["23:30", "09:00"]
+  tue: ["23:30", "09:00"]
+  wed: ["23:30", "09:00"]
+  thu: ["23:30", "09:00"]
+  fri: ["23:30", "09:00"]
+  sat: ["23:30", "09:00"]
+  sun: ["23:30", "09:00"]
+witness:
+  enabled: false
+  webhook_url: ""      # 0600 this file once a real secret lands here
+telling:
+  enabled: false
+  hour: 20
+hermes:
+  enabled: false
+  hook_path: ""

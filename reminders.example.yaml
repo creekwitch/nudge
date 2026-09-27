@@ -1,0 +1,20 @@
+# Nudge example reminders — copy to ~/.config/nudge/reminders.yaml and edit.
+# This file is your memory; the app writes it, agents read it.
+reminders:
+  - id: appointment
+    type: appointment
+    when: 2026-10-03 14:00
+    text: "Appointment today"
+    note: "Leave by 1:15. Keys, wallet, phone."
+    hard: true
+
+  - id: laundry
+    type: chore
+    schedule: "mon,wed,fri 13:00"
+    text: "Laundry"
+
+  - id: stretch
+    type: nudge
+    every: 90m
+    active_only: true
+    text: "Stretch"
