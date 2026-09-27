@@ -101,3 +101,13 @@ is welcome, with a link back. See [LICENSE](LICENSE).
 
 Nudge is a reminder tool, not a medical device or a safety system — do not
 rely on it where a missed notice could cause harm.
+
+---
+
+## Companions
+
+Other small, local-only tools from the same hand:
+
+- **[The Garden](https://github.com/creekwitch/the-garden)** — a private,
+  local-only desktop diary. One HTML file, a stdlib-only Python server, and
+  a GTK window; your writing never leaves the machine. Freeware.
